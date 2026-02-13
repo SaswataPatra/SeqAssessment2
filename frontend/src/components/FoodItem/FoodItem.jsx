@@ -6,13 +6,29 @@ import { StoreContext } from '../context/StoreContext';
 const FoodItem = ({id,name,price,description,image}) => {
 
     const {cartItems,addToCart,removeFromCart,url} = useContext(StoreContext);
+    
+    const shouldShowAdd = !cartItems[id];
+    // Check if image is a local asset path or a database filename
+    const imageSrc = typeof image === 'string' && image.startsWith('/src/') 
+        ? image 
+        : typeof image === 'string' 
+            ? url+'/images/'+image 
+            : image;
+    console.log('FoodItem:', {
+        id, 
+        name,
+        image,
+        imageType: typeof image,
+        imageSrc,
+        shouldShowAdd
+    });
 
   return (
     <div className='food-item'>
         <div className="food-item-img-container">
-            <img className='food-item-image' src={url+'/images/'+image} alt="" />
+            <img className='food-item-image' src={imageSrc} alt="" />
             {
-                !cartItems[id] ? <img className='add' onClick={()=> addToCart(id)} src={assets.add_icon_white}/>: 
+                shouldShowAdd ? <img className='add' onClick={()=> addToCart(id)} src={assets.add_icon_white} alt="Add"/>: 
                 <div className="food-item-counter">
                     <img onClick={()=>removeFromCart(id)} src={assets.remove_icon_red} alt="" />
                     <p>{cartItems[id]}</p>

@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import axios from 'axios'
+import { food_list as fallbackFoodList } from '../../assets/assets'
 
 export const StoreContext = createContext(null)
 
@@ -9,7 +10,9 @@ const StoreContextProvider = (props) => {
     const url = "http://localhost:4000";
     const [token,setToken] = useState("");
 
-    const [food_list, setFoodList] = useState([]);
+    const [food_list, setFoodList] = useState(fallbackFoodList);
+    
+    console.log('StoreContext - food_list length:', food_list.length, 'cartItems:', cartItems);
 
     const addToCart = async (itemId) => {
         if (!cartItems[itemId]) {
@@ -43,8 +46,9 @@ const StoreContextProvider = (props) => {
     }
 
     const fetchFoodList = async () =>{
-        const response = await axios.get(url+"/api/food/list");
-        setFoodList(response.data.data)
+        // Always use fallback food list with local images
+        console.log("Using fallback food list with", fallbackFoodList.length, "items");
+        // Don't call API since backend images aren't set up
     }
 
     const loadCartData = async (token) =>{
